@@ -44,89 +44,89 @@ export default function AreaSelectionModal({ isOpen, onSelectArea, onClose }) {
                     width: "100%",
                     boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
                 }}
-                onClick=(e) => e.stopPropagation()}
-      >
-            <h2
-                style={{
-                    fontSize: "28px",
-                    fontWeight: "600",
-                    marginBottom: "8px",
-                    textAlign: "center",
-                }}
+                onClick={(e) => e.stopPropagation()}
             >
-                ¿A qué área vienes?
-            </h2>
-            <p
-                style={{
-                    color: "#6b7280",
-                    marginBottom: "24px",
-                    textAlign: "center",
-                }}
-            >
-                Selecciona el área que vas a utilizar
-            </p>
+                <h2
+                    style={{
+                        fontSize: "28px",
+                        fontWeight: "600",
+                        marginBottom: "8px",
+                        textAlign: "center",
+                    }}
+                >
+                    ¿A qué área vienes?
+                </h2>
+                <p
+                    style={{
+                        color: "#6b7280",
+                        marginBottom: "24px",
+                        textAlign: "center",
+                    }}
+                >
+                    Selecciona el área que vas a utilizar
+                </p>
 
-            <div
-                style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(2, 1fr)",
-                    gap: "12px",
-                }}
-            >
-                {areas.map((area) => (
-                    <button
-                        key={area}
-                        onClick={() => handleSelect(area)}
-                        style={{
-                            padding: "20px",
-                            fontSize: "18px",
-                            fontWeight: "500",
-                            backgroundColor: "#2563eb",
-                            color: "white",
-                            border: "none",
-                            borderRadius: "12px",
-                            cursor: "pointer",
-                            transition: "all 0.2s",
-                            boxShadow: "0 2px 8px rgba(37, 99, 235, 0.3)",
-                        }}
-                        onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = "#1d4ed8";
-                            e.target.style.transform = "scale(1.05)";
-                        }}
-                        onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = "#2563eb";
-                            e.target.style.transform = "scale(1)";
-                        }}
-                    >
-                        {area}
-                    </button>
-                ))}
+                <div
+                    style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(2, 1fr)",
+                        gap: "12px",
+                    }}
+                >
+                    {areas.map((area) => (
+                        <button
+                            key={area}
+                            onClick={() => handleSelect(area)}
+                            style={{
+                                padding: "20px",
+                                fontSize: "18px",
+                                fontWeight: "500",
+                                backgroundColor: "#2563eb",
+                                color: "white",
+                                border: "none",
+                                borderRadius: "12px",
+                                cursor: "pointer",
+                                transition: "all 0.2s",
+                                boxShadow: "0 2px 8px rgba(37, 99, 235, 0.3)",
+                            }}
+                            onMouseEnter={(e) => {
+                                e.target.style.backgroundColor = "#1d4ed8";
+                                e.target.style.transform = "scale(1.05)";
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.backgroundColor = "#2563eb";
+                                e.target.style.transform = "scale(1)";
+                            }}
+                        >
+                            {area}
+                        </button>
+                    ))}
+                </div>
+
+                <button
+                    onClick={onClose}
+                    style={{
+                        marginTop: "24px",
+                        width: "100%",
+                        padding: "12px",
+                        fontSize: "16px",
+                        backgroundColor: "#e5e7eb",
+                        color: "#374151",
+                        border: "none",
+                        borderRadius: "8px",
+                        cursor: "pointer",
+                        fontWeight: "500",
+                    }}
+                    onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = "#d1d5db";
+                    }}
+                    onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = "#e5e7eb";
+                    }}
+                >
+                    Cancelar
+                </button>
             </div>
-
-            <button
-                onClick={onClose}
-                style={{
-                    marginTop: "24px",
-                    width: "100%",
-                    padding: "12px",
-                    fontSize: "16px",
-                    backgroundColor: "#e5e7eb",
-                    color: "#374151",
-                    border: "none",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                    fontWeight: "500",
-                }}
-                onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = "#d1d5db";
-                }}
-                onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = "#e5e7eb";
-                }}
-            >
-                Cancelar
-            </button>
-        </div>
-    </div >
-  );
+        </div >
+    );
 }
