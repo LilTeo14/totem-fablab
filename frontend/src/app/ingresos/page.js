@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import LatestAccesses from "../../components/LatestAccesses";
+import AreaSelectionModal from "../../components/AreaSelectionModal";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
 
@@ -9,6 +10,8 @@ export default function IngresosPage() {
   const [scannedCode, setScannedCode] = useState("");
   const [message, setMessage] = useState("");
   const [buffer, setBuffer] = useState("");
+  const [showAreaModal, setShowAreaModal] = useState(false);
+  const [pendingAccessId, setPendingAccessId] = useState(null);
 
   const handleUpload = (e) => {
     const file = e.target.files?.[0];
@@ -66,6 +69,25 @@ export default function IngresosPage() {
     };
   }, [buffer, processCode]);
 
+  const handleAreaSelect = async (area) => {
+    if (!pendingAccessId) return;
+
+    try {
+      await fetch(`${BACKEND_URL}/api/access/${pendingAccessId}/area`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ area }),
+      });
+
+      setShowAreaModal(false);
+      setPendingAccessId(null);
+    } catch (error) {
+      console.error("Error al actualizar área:", error);
+    }
+  };
+
   // Escuchar eventos del servidor para actualizar la pantalla principal
   useEffect(() => {
     const endpoint = `${BACKEND_URL}/api/access/events`;
@@ -78,6 +100,10 @@ export default function IngresosPage() {
         if (data.source === "qr-reader" && (data.raw_code || data.rut)) {
           setScannedCode(data.raw_code || String(data.rut));
           setMessage(`Acceso registrado: RUT ${data.rut}`);
+
+          // Mostrar modal de selección de área
+          setPendingAccessId(data.id);
+          setShowAreaModal(true);
 
           // Limpiar después de 5 segundos
           setTimeout(() => {
@@ -169,6 +195,12 @@ export default function IngresosPage() {
       <div id="resultado" style={{ marginTop: 12, minHeight: 24 }} />
 
       <LatestAccesses limit={8} />
+
+      <AreaSelectionModal
+        isOpen={showAreaModal}
+        onSelectArea={handleAreaSelect}
+        onClose={() => setShowAreaModal(false)}
+      />
     </main>
   );
 }

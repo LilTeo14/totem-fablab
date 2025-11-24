@@ -5,6 +5,7 @@ const {
   registerManualAccess,
   registerQrAccess,
   getRecentAccesses,
+  updateAccessArea,
   onAccessSaved,
 } = require("./services/accessService");
 const { startQrScannerService } = require("./services/qrScannerService");
@@ -73,6 +74,24 @@ app.get("/api/access/events", (req, res) => {
     unsubscribe();
     res.end();
   });
+});
+
+app.patch("/api/access/:id/area", async (req, res) => {
+  const { id } = req.params;
+  const { area } = req.body;
+
+  if (!area) {
+    return res.status(400).json({ success: false, error: "El área es obligatoria" });
+  }
+
+  try {
+    const record = await updateAccessArea(id, area);
+    res.json({ success: true, data: record });
+  } catch (err) {
+    const status = err.message.includes("no válida") || err.message.includes("no encontrado") ? 400 : 500;
+    logger.error("Error al actualizar área", { error: err.message, id, area });
+    res.status(status).json({ success: false, error: err.message });
+  }
 });
 
 app.post("/saveData", async (req, res) => {

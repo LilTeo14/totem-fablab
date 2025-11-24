@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS
         "motivo" varchar(100) NOT NULL,
         "source" varchar(32) DEFAULT 'manual',
         "raw_code" text,
+        "area" varchar(50),
         "fecha_creacion" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 

@@ -77,6 +77,7 @@ export default function LatestAccesses({ limit = 10 }) {
     motivo: item.motivo,
     source: item.source,
     raw: item.raw_code,
+    area: item.area,
     time: item.fecha_creacion,
   })), [items]);
 
@@ -105,6 +106,9 @@ export default function LatestAccesses({ limit = 10 }) {
             </div>
             {row.raw && (
               <div className="latestAccessesRaw">QR: {row.raw}</div>
+            )}
+            {row.area && (
+              <div className="latestAccessesRaw">Área: {row.area}</div>
             )}
           </li>
         ))}

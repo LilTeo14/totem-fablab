@@ -31,7 +31,7 @@ function normalizeRut(raw) {
   return digits ? Number(digits) : null;
 }
 
-async function registerAccess({ rut, motivo, source, rawCode }) {
+async function registerAccess({ rut, motivo, source, rawCode, area }) {
   const normalizedRut = normalizeRut(rut);
   if (!normalizedRut) {
     throw new Error("El RUT es obligatorio para registrar el acceso");
@@ -44,12 +44,45 @@ async function registerAccess({ rut, motivo, source, rawCode }) {
       ? "manual-entry"
       : "qr-scan";
 
-  const query = 'INSERT INTO "visita" (rut, motivo, source, raw_code) VALUES ($1, $2, $3, $4) RETURNING *';
-  const values = [normalizedRut, safeMotivo, safeSource, rawCode || null];
+  const query = 'INSERT INTO "visita" (rut, motivo, source, raw_code, area) VALUES ($1, $2, $3, $4, $5) RETURNING *';
+  const values = [normalizedRut, safeMotivo, safeSource, rawCode || null, area || null];
   const { rows } = await client.query(query, values);
   const record = rows[0];
   notify(record);
-  logger.info("Acceso registrado", { rut: normalizedRut, source: safeSource });
+  logger.info("Acceso registrado", { rut: normalizedRut, source: safeSource, area });
+  return record;
+}
+
+async function updateAccessArea(id, area) {
+  if (!id) {
+    throw new Error("El ID del acceso es obligatorio");
+  }
+
+  const validAreas = [
+    "Cortadora laser",
+    "CNC",
+    "Mecanica",
+    "Electronica",
+    "Impresion 3d",
+    "Costura",
+    "Otro"
+  ];
+
+  if (!area || !validAreas.includes(area)) {
+    throw new Error("Área no válida");
+  }
+
+  const query = 'UPDATE "visita" SET area = $1 WHERE id = $2 RETURNING *';
+  const values = [area, id];
+  const { rows } = await client.query(query, values);
+
+  if (rows.length === 0) {
+    throw new Error("Acceso no encontrado");
+  }
+
+  const record = rows[0];
+  notify(record);
+  logger.info("Área actualizada", { id, area });
   return record;
 }
 
@@ -92,7 +125,7 @@ async function registerQrAccess({ code }) {
 
 async function getRecentAccesses(limit = 10) {
   const safeLimit = Number.isFinite(limit) ? Math.min(Math.max(Number(limit), 1), 100) : 10;
-  const query = 'SELECT id, rut, motivo, source, raw_code, fecha_creacion FROM "visita" ORDER BY fecha_creacion DESC LIMIT $1';
+  const query = 'SELECT id, rut, motivo, source, raw_code, area, fecha_creacion FROM "visita" ORDER BY fecha_creacion DESC LIMIT $1';
   const { rows } = await client.query(query, [safeLimit]);
   return rows;
 }
@@ -101,5 +134,6 @@ module.exports = {
   registerManualAccess,
   registerQrAccess,
   getRecentAccesses,
+  updateAccessArea,
   onAccessSaved,
 };
