@@ -1,0 +1,390 @@
+/* globals.css — cleaned and consolidated
+   - use Tailwind directives
+   - consolidate duplicated blocks
+   - fix dark mode variables so dark theme actually shows
+*/
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #111827; /* gray-900 */
+  --muted: #6b7280;     /* gray-500 */
+  --surface: #ffffff;
+  --header-bg: #f8fafc;
+  --tile-border: #e5e7eb;
+  --accent: #0070f3;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0b1220;  /* dark navy */
+    --foreground: #e6eef8;  /* light text */
+    --muted: #9ca3af;       /* gray-400 */
+    --surface: #071025;
+    --header-bg: #0f1724;
+    --tile-border: #111827;
+    --accent: #3b82f6;      /* blue-500 */
+  }
+}
+
+/* manual override: when developer or user sets data-theme="dark" on <html> */
+[data-theme="dark"] {
+  --background: #0b1220;  /* dark navy */
+  --foreground: #e6eef8;  /* light text */
+  --muted: #9ca3af;       /* gray-400 */
+  --surface: #071025;
+  --header-bg: #0f1724;
+  --tile-border: #111827;
+  --accent: #3b82f6;      /* blue-500 */
+}
+
+/* Base document */
+html, body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Global UI scale for kiosk readability. Change --global-scale in :root to adjust overall size */
+:root {
+  --global-scale: 1.2;
+}
+
+/* Apply scale only to main content via .scaleWrap so fixed header remains properly pinned to the viewport top. */
+.scaleWrap {
+  transform: scale(var(--global-scale));
+  transform-origin: top left;
+  width: calc(100% / var(--global-scale));
+  height: calc(100% / var(--global-scale));
+}
+
+/* Layout helpers */
+.container {
+  min-height: 100vh;
+  padding-top: 60px; /* space for fixed header */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+/* Ensure page content is pushed below the fixed header used in layout.js */
+.app-content {
+  padding-top: 60px; /* matches .header height */
+  width: 100%;
+}
+
+/* Building status banner (for kiosk) */
+.statusBanner {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+  /* Offset by header height so banner is not cropped by fixed header */
+  margin-top: 60px;
+  z-index: 900; /* header is 1000, banner should appear below it */
+}
+.statusBanner .statusContent {
+  width: 100%;
+  max-width: 900px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.statusBanner.open {
+  background: #2E8B57; /* SeaGreen for ABIERTO */
+  color: white;
+}
+.statusBanner.closed {
+  background: linear-gradient(90deg, #ef4444, #9f1239); /* red */
+  color: white;
+}
+
+.statusSchedule {
+  font-size: 12px;
+  color: rgba(255,255,255,0.9);
+  opacity: 0.95;
+}
+
+.statusControls button {
+  background: rgba(255,255,255,0.12);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.18);
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+.statusControls button:hover {
+  background: rgba(255,255,255,0.18);
+}
+
+/* center main banner text while controls are positioned to the right */
+.statusMain {
+  text-align: center;
+}
+.statusControls {
+  position: absolute;
+  right: 12px;
+  top: 8px;
+}
+
+.header {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box; /* include padding inside the declared height */
+  padding-right: 54px; /* add extra right space so header controls (theme toggle) aren't flush to the edge */
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background-color: var(--header-bg);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 60px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+  z-index: 1000;
+}
+
+.headerImg {
+  height: 40px;
+  width: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Brand link (header title) - remove default anchor styling and keep color consistent */
+.brandLink {
+  font-size: 16px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+.brandLink:visited { color: inherit; }
+.brandLink:hover { text-decoration: none; opacity: 0.95; }
+
+/* Theme toggle button in header */
+.themeToggle {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+}
+.themeToggle:hover { background: rgba(0,0,0,0.04); }
+
+/* Forms */
+.input {
+  padding: 10px;
+  font-size: 16px;
+  width: 300px;
+  border: 1px solid var(--tile-border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--foreground);
+}
+
+.button {
+  border: 2px solid var(--accent);
+  border-radius: 6px;
+  margin-top: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 16px;
+  background: transparent;
+  color: inherit;
+}
+
+/* Popup overlay */
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+}
+
+.popupContent {
+  background-color: var(--surface);
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 300px;
+  box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+}
+
+/* Header links */
+.navLinks {
+  margin-right: 12px; /* extra breathing room from the right edge */
+}
+
+.navLinks .navLink {
+  padding: 6px 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--foreground);
+  border: 1px solid transparent;
+}
+.navLinks .navLink:hover {
+  background: rgba(0,0,0,0.04);
+  border-color: rgba(0,0,0,0.06);
+}
+
+/* Home menu — responsive grid of tiles */
+.menu {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding-top: 60px; /* safe spacing when not using .container */
+}
+
+.menuTitle {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 8px;
+  text-align: center;
+}
+
+.menuSubtitle {
+  color: var(--muted);
+  margin: 0 0 16px;
+  text-align: center;
+}
+
+.menuGrid {
+  display: grid;
+  gap: 12px;
+  /* Default to 2 columns so the main page renders as a 2x2 grid */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 980px) {
+  .menuGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 540px) {
+  .menuGrid { grid-template-columns: 1fr; }
+}
+
+.menuTile {
+  display: block;
+  text-decoration: none;
+  color: var(--foreground);
+  border: 1px solid var(--tile-border);
+  border-radius: 12px;
+  padding: 14px;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+  background: var(--surface);
+}
+.menuTile:hover {
+  transform: translateY(-1px);
+  border-color: rgba(0,0,0,0.08);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.08);
+}
+
+.menuTileTitle {
+  margin: 0 0 4px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+/* Small accessibility and UX tweaks */
+@media (prefers-reduced-motion: reduce) {
+  .menuTile, .button { transition: none; }
+}
+
+.latestAccesses {
+  margin-top: 32px;
+  width: 100%;
+  max-width: 720px;
+  border: 1px solid var(--tile-border);
+  border-radius: 12px;
+  padding: 16px;
+  background: var(--surface);
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08);
+}
+
+.latestAccessesHeader h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.latestAccessesStatus {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.latestAccessesList {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.latestAccessesItem {
+  border: 1px solid var(--tile-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.latestAccessesPrimary {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+}
+
+.latestAccessesMotivo {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.latestAccessesMeta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.latestAccessesSource {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.latestAccessesRaw {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.latestAccessesEmpty {
+  text-align: center;
+  color: var(--muted);
+}
+
+
+
