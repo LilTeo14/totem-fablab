@@ -30,12 +30,17 @@ services:
       - DB_USER=user
       - DB_PASSWORD=password
       - DB_NAME=mydb
+      - QR_SCANNER_DEVICE=/dev/input/event0 # Le dice al backend dónde leer
+      - QR_SCANNER_ENABLED=true
     depends_on:
       postgres_db:
         condition: service_healthy
     volumes:
       - ./backend:/app
       - /app/node_modules
+    # Configuración para Raspberry Pi / Linux (Lector USB nativo)
+    devices:
+      - "/dev/input/event0:/dev/input/event0" # Mapea el primer dispositivo de entrada
     # command: npm run dev
   postgres_db:
     build: ./db
