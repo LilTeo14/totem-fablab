@@ -66,6 +66,39 @@ export default function IngresosPage() {
     };
   }, [buffer, processCode]);
 
+  // Escuchar eventos del servidor para actualizar la pantalla principal
+  useEffect(() => {
+    const endpoint = `${BACKEND_URL}/api/access/events`;
+    const source = new EventSource(endpoint);
+
+    source.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        // Actualizar solo si viene del lector remoto
+        if (data.source === "qr-reader" && (data.raw_code || data.rut)) {
+          setScannedCode(data.raw_code || String(data.rut));
+          setMessage(`Acceso registrado: RUT ${data.rut}`);
+
+          // Limpiar después de 5 segundos
+          setTimeout(() => {
+            setScannedCode("");
+            setMessage("");
+          }, 5000);
+        }
+      } catch (err) {
+        console.error("Error procesando evento SSE", err);
+      }
+    };
+
+    source.onerror = () => {
+      console.warn("Conexión SSE interrumpida, reintentando...");
+    };
+
+    return () => {
+      source.close();
+    };
+  }, []);
+
   return (
     <main
       style={{

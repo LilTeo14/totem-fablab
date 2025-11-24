@@ -18,7 +18,6 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - NEXT_WEBPACK_USEPOLLING=1
       - NEXT_DISABLE_TURBOPACK=1
-      - NEXT_PUBLIC_BACKEND_URL=http://10.35.53.191:8000
   backend:
     build:
       context: backend
@@ -31,17 +30,12 @@ services:
       - DB_USER=user
       - DB_PASSWORD=password
       - DB_NAME=mydb
-      - QR_SCANNER_DEVICE=/dev/input/event4 # Le dice al backend dónde leer
-      - QR_SCANNER_ENABLED=true
     depends_on:
       postgres_db:
         condition: service_healthy
     volumes:
       - ./backend:/app
       - /app/node_modules
-    # Configuración para Raspberry Pi / Linux (Lector USB nativo)
-    devices:
-      - "/dev/input/event4:/dev/input/event4" # Mapea el dispositivo correcto
     # command: npm run dev
   postgres_db:
     build: ./db
