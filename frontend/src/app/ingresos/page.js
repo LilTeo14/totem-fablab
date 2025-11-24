@@ -101,9 +101,11 @@ export default function IngresosPage() {
           setScannedCode(data.raw_code || String(data.rut));
           setMessage(`Acceso registrado: RUT ${data.rut}`);
 
-          // Mostrar modal de selección de área
-          setPendingAccessId(data.id);
-          setShowAreaModal(true);
+          // Mostrar modal de selección de área SOLO si no tiene área asignada aún
+          if (!data.area) {
+            setPendingAccessId(data.id);
+            setShowAreaModal(true);
+          }
 
           // Limpiar después de 5 segundos
           setTimeout(() => {
