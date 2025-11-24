@@ -58,7 +58,14 @@ export default function LatestAccesses({ limit = 10 }) {
       try {
         const data = JSON.parse(event.data);
         setItems((prev) => {
-          const next = [data, ...prev];
+          // Si el item ya existe (por ID), lo actualizamos en lugar de duplicarlo
+          const exists = prev.some((item) => item.id === data.id);
+          let next;
+          if (exists) {
+            next = prev.map((item) => (item.id === data.id ? data : item));
+          } else {
+            next = [data, ...prev];
+          }
           return next.slice(0, limit);
         });
       } catch (err) {
