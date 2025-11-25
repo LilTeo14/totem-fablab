@@ -13,14 +13,6 @@ export default function IngresosPage() {
   const [showAreaModal, setShowAreaModal] = useState(false);
   const [pendingAccessId, setPendingAccessId] = useState(null);
 
-  const handleUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      console.log("Archivo seleccionado:", file.name);
-      // aquí podrías enviar el archivo al backend (fetch/FormData)
-    }
-  };
-
   const processCode = useCallback(async (code) => {
     setScannedCode(code);
     setMessage("Procesando...");
@@ -128,75 +120,88 @@ export default function IngresosPage() {
   }, []);
 
   return (
-    <main
-      style={{
-        maxWidth: 720,
-        margin: "0 auto",
+    <main className="container" style={{ justifyContent: "flex-start", paddingTop: 120, paddingBottom: 40 }}>
+      <div style={{
         display: "flex",
         flexDirection: "column",
-        alignItems: "flex-start", // align to top/left so header doesn't overlap
-        justifyContent: "flex-start",
-        gap: 16,
-        padding: "24px 16px",
-        textAlign: "left",
-      }}
-    >
-      <h1 style={{ fontSize: 28, fontWeight: 600, marginBottom: 8 }}>
-        Control de ingreso
-      </h1>
-      <p style={{ color: "#6b7280", marginBottom: 24 }}>
-        Acerque su tarjeta al lector o suba su credencial.
-      </p>
-
-      {/* Visual feedback for scanned code */}
-      <div style={{
-        padding: "16px",
-        backgroundColor: "#f3f4f6",
-        borderRadius: "8px",
+        alignItems: "center",
+        textAlign: "center",
+        gap: 24,
+        marginBottom: 40,
         width: "100%",
-        marginBottom: "16px"
+        maxWidth: 600
       }}>
-        <p style={{ fontSize: "0.875rem", color: "#6b7280", marginBottom: "4px" }}>
-          Código detectado:
+        {/* Hero Icon */}
+        <div style={{
+          width: 100,
+          height: 100,
+          borderRadius: "50%",
+          background: "var(--accent)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "white",
+          boxShadow: "0 0 30px rgba(59, 130, 246, 0.4)",
+          marginBottom: 8
+        }}>
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 7V5a2 2 0 0 1 2-2h2" />
+            <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+            <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+            <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+            <rect x="7" y="7" width="10" height="10" rx="1" />
+          </svg>
+        </div>
+
+        <h1 style={{ fontSize: 36, fontWeight: 800, margin: 0, letterSpacing: "-0.02em" }}>
+          Control de Ingreso
+        </h1>
+
+        <p style={{ fontSize: 24, fontWeight: 600, color: "var(--foreground)", margin: 0, lineHeight: 1.4 }}>
+          Acerque su tarjeta al lector para registrar su ingreso
         </p>
-        <p style={{ fontSize: "1.25rem", fontFamily: "monospace", fontWeight: "bold" }}>
-          {scannedCode || "Esperando lectura..."}
-        </p>
-        {message && (
-          <p style={{
-            marginTop: "8px",
-            color: message.startsWith("Error") ? "#ef4444" : "#10b981",
-            fontWeight: "500"
-          }}>
-            {message}
-          </p>
-        )}
+
+        {/* Feedback Area */}
+        <div style={{
+          minHeight: 64,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          marginTop: 16,
+          width: "100%"
+        }}>
+          {message ? (
+            <div style={{
+              padding: "16px 32px",
+              borderRadius: 16,
+              background: message.startsWith("Error") ? "rgba(239, 68, 68, 0.1)" : "rgba(34, 197, 94, 0.1)",
+              color: message.startsWith("Error") ? "#ef4444" : "#16a34a",
+              fontWeight: 600,
+              fontSize: 20,
+              boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+              border: `1px solid ${message.startsWith("Error") ? "rgba(239, 68, 68, 0.2)" : "rgba(34, 197, 94, 0.2)"}`,
+              animation: "fadeIn 0.3s ease-out"
+            }}>
+              {message}
+            </div>
+          ) : (
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              color: "var(--muted)",
+              opacity: 0.6,
+              fontSize: 18
+            }}>
+              <span className="animate-pulse">●</span> Esperando lectura...
+            </div>
+          )}
+        </div>
       </div>
 
-      <label
-        htmlFor="credencial"
-        style={{
-          display: "inline-block",
-          padding: "10px 18px",
-          border: "1px solid #2563eb",
-          borderRadius: 8,
-          cursor: "pointer",
-          fontWeight: 500,
-        }}
-      >
-        Subir Credencial (PDF/Img)
-      </label>
-      <input
-        id="credencial"
-        type="file"
-        accept="image/*,.pdf"
-        onChange={handleUpload}
-        style={{ display: "none" }}
-      />
-
-      <div id="resultado" style={{ marginTop: 12, minHeight: 24 }} />
-
-      <LatestAccesses limit={8} />
+      <div style={{ width: "100%", maxWidth: 800 }}>
+        <LatestAccesses limit={8} />
+      </div>
 
       <AreaSelectionModal
         isOpen={showAreaModal}
