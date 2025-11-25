@@ -2,6 +2,7 @@
 import Link from "next/link";
 import ThemeToggle from "../components/ThemeToggle";
 import StatusBanner from "../components/StatusBanner";
+import FullscreenToggle from "../components/FullscreenToggle";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -49,6 +50,7 @@ export default function RootLayout({ children }) {
             {children}
           </div>
         </div>
+        <FullscreenToggle />
       </body>
     </html>
   );
