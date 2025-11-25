@@ -3,6 +3,7 @@ services:
     build:
       context: frontend
       dockerfile: Dockerfile
+    restart: always
     ports:
       - "3000:3000" # Puerto real de Next.js
     depends_on:
@@ -23,6 +24,7 @@ services:
     build:
       context: backend
       dockerfile: Dockerfile
+    restart: always
     ports:
       - "8000:8000"
     environment:
@@ -44,6 +46,7 @@ services:
     # command: npm run dev
   postgres_db:
     build: ./db
+    restart: always
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
