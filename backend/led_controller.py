@@ -66,6 +66,9 @@ def led_loop():
     ring_len = 16
     offset = 0
     
+    last_status_check = 0
+    cached_open_status = False
+    
     while True:
         if current_mode == "FLASH":
             # Parpadeo Azul
@@ -81,8 +84,12 @@ def led_loop():
                 current_mode = "NORMAL"
         
         # Modo Normal: Patrón giratorio
-        open_status = is_open()
-        primary_color = VERDE if open_status else ROJO
+        # Check status only once per second to avoid blocking I/O
+        if time.time() - last_status_check > 1.0:
+            cached_open_status = is_open()
+            last_status_check = time.time()
+            
+        primary_color = VERDE if cached_open_status else ROJO
         secondary_color = BLANCO
         
         # Girar
