@@ -123,8 +123,6 @@ async function resolveQrCode(code) {
     };
   }
 
-  logger.info("Resolving QR", { code: trimmed, length: trimmed.length });
-
   const numericRut = normalizeRut(trimmed);
   const digitsOnly = trimmed.replace(/\D/g, '');
 
@@ -136,7 +134,6 @@ async function resolveQrCode(code) {
 
     let rutWithDv = rutBody + dv;
 
-    logger.info("QR parsed as student credential", { original: trimmed, rut: rutWithDv });
     return { rut: rutWithDv, motivo: "qr-scan" };
   }
 
