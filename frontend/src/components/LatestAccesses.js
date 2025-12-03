@@ -112,9 +112,7 @@ export default function LatestAccesses({ limit = 10 }) {
               <span className="latestAccessesSource">{row.source}</span>
               <time dateTime={row.time}>{formatTime(row.time)}</time>
             </div>
-            {row.raw && (
-              <div className="latestAccessesRaw">QR: {row.raw}</div>
-            )}
+
             {row.area && (
               <div className="latestAccessesRaw">Área: {row.area}</div>
             )}
