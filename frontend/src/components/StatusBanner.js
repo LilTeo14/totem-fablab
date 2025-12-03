@@ -5,36 +5,29 @@ import { useEffect, useState } from "react";
 export default function StatusBanner() {
   const [open, setOpen] = useState(false);
 
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+
   useEffect(() => {
-    const checkIsOpen = () => {
-      const now = new Date();
-      const day = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-      const hour = now.getHours();
-      const minute = now.getMinutes();
-      const time = hour * 60 + minute;
-
-      // Schedule: Monday (1) to Friday (5)
-      // 11:05 (665 mins) - 13:40 (820 mins)
-      // 14:40 (880 mins) - 17:00 (1020 mins)
-
-      if (day >= 1 && day <= 5) {
-        const morningOpen = time >= 665 && time < 820;
-        const afternoonOpen = time >= 880 && time < 1020;
-        return morningOpen || afternoonOpen;
+    const fetchStatus = async () => {
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/status`);
+        if (res.ok) {
+          const data = await res.json();
+          setOpen(data.isOpen);
+        }
+      } catch (err) {
+        console.error("Error fetching status:", err);
       }
-      return false;
     };
 
     // Check immediately
-    setOpen(checkIsOpen());
+    fetchStatus();
 
     // Check every minute
-    const interval = setInterval(() => {
-      setOpen(checkIsOpen());
-    }, 60000);
+    const interval = setInterval(fetchStatus, 60000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [BACKEND_URL]);
 
   return (
     <div className={"statusBanner " + (open ? "open" : "closed")} role="status" aria-live="polite">

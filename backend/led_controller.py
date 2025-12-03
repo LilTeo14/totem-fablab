@@ -4,6 +4,8 @@ import time
 import socket
 import threading
 import datetime
+import json
+import os
 
 # --- CONFIGURACIÓN ---
 pixel_pin = board.D18   # GPIO 18 (Pin físico 12)
@@ -24,8 +26,24 @@ pixels = neopixel.NeoPixel(
 # ESTADO GLOBAL
 current_mode = "NORMAL" # NORMAL, FLASH
 flash_end_time = 0
+STATUS_FILE = "status.json"
 
 def is_open():
+    # 1. Check override mode
+    try:
+        if os.path.exists(STATUS_FILE):
+            with open(STATUS_FILE, "r") as f:
+                data = json.load(f)
+                mode = data.get("mode", "AUTO")
+                
+                if mode == "OPEN":
+                    return True
+                if mode == "CLOSED":
+                    return False
+    except Exception as e:
+        print(f"Error leyendo status.json: {e}")
+
+    # 2. AUTO mode (Time based)
     now = datetime.datetime.now()
     day = now.weekday() # 0 = Monday, ..., 6 = Sunday
     

@@ -1,6 +1,9 @@
 const express = require("express");
 const cors = require("cors");
 const logger = require("./utils/logger");
+const fs = require("fs");
+const path = require("path");
+const STATUS_FILE = path.join(__dirname, "status.json");
 const {
   registerManualAccess,
   registerQrAccess,
@@ -102,6 +105,66 @@ app.post("/saveData", async (req, res) => {
     logger.error("Error al guardar registro desde /saveData", { error: err.message });
     const status = err.message.includes("RUT") ? 400 : 500;
     res.status(status).send("Error interno del servidor");
+  }
+}
+});
+
+// --- STATUS API ---
+
+function getAutoStatus() {
+  const now = new Date();
+  const day = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  const hour = now.getHours();
+  const minute = now.getMinutes();
+  const time = hour * 60 + minute;
+
+  // Schedule: Monday (1) to Friday (5)
+  // 11:05 (665 mins) - 13:40 (820 mins)
+  // 14:40 (880 mins) - 17:00 (1020 mins)
+  if (day >= 1 && day <= 5) {
+    const morningOpen = time >= 665 && time < 820;
+    const afternoonOpen = time >= 880 && time < 1020;
+    return morningOpen || afternoonOpen;
+  }
+  return false;
+}
+
+function readStatusMode() {
+  try {
+    if (fs.existsSync(STATUS_FILE)) {
+      const data = fs.readFileSync(STATUS_FILE, "utf8");
+      return JSON.parse(data).mode || "AUTO";
+    }
+  } catch (err) {
+    logger.error("Error leyendo status.json", { error: err.message });
+  }
+  return "AUTO";
+}
+
+app.get("/api/status", (req, res) => {
+  const mode = readStatusMode();
+  let isOpen = false;
+
+  if (mode === "OPEN") isOpen = true;
+  else if (mode === "CLOSED") isOpen = false;
+  else isOpen = getAutoStatus();
+
+  res.json({ isOpen, mode });
+});
+
+app.post("/api/status", (req, res) => {
+  const { mode } = req.body;
+  if (!["AUTO", "OPEN", "CLOSED"].includes(mode)) {
+    return res.status(400).json({ success: false, error: "Modo inválido. Use AUTO, OPEN o CLOSED" });
+  }
+
+  try {
+    fs.writeFileSync(STATUS_FILE, JSON.stringify({ mode }, null, 2));
+    logger.info(`Modo de estado actualizado a: ${mode}`);
+    res.json({ success: true, mode });
+  } catch (err) {
+    logger.error("Error escribiendo status.json", { error: err.message });
+    res.status(500).json({ success: false, error: "Error guardando estado" });
   }
 });
 
