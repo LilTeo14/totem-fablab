@@ -107,12 +107,18 @@ def start_socket_server():
 
 if __name__ == "__main__":
     try:
+        print("Iniciando controlador LED...")
+        
         # Iniciar hilo del servidor socket
         server_thread = threading.Thread(target=start_socket_server, daemon=True)
         server_thread.start()
         
-        print("Iniciando controlador LED...")
         led_loop()
+        
+    except Exception as e:
+        with open("led_error.log", "w") as f:
+            f.write(f"Error fatal: {str(e)}\n")
+        print(f"Error fatal: {e}")
         
     except KeyboardInterrupt:
         pixels.fill(NEGRO)

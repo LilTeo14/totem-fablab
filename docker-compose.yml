@@ -44,6 +44,10 @@ services:
       - /app/node_modules
     devices:
       - "/dev/input/event4:/dev/input/event4"
+      - "/dev/mem:/dev/mem"
+      - "/dev/gpiomem:/dev/gpiomem"
+    cap_add:
+      - SYS_RAWIO
     # command: npm run dev
   postgres_db:
     build: ./db
