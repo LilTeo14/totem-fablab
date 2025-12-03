@@ -123,30 +123,20 @@ async function resolveQrCode(code) {
     };
   }
 
+  logger.info("Resolving QR", { code: trimmed, length: trimmed.length });
+
   const numericRut = normalizeRut(trimmed);
+  const digitsOnly = trimmed.replace(/\D/g, '');
 
   // Check for 18-digit student credential code
   // Example: 870041246420885246 -> RUT 20885246
-  if (trimmed.length === 18 && /^\d+$/.test(trimmed)) {
-    const rutBody = trimmed.slice(-8);
+  if (digitsOnly.length === 18) {
+    const rutBody = digitsOnly.slice(-8);
     const dv = calculateDV(rutBody);
-    // Return as number (Body + DV digit/char mapped?)
-    // Based on logs, the system expects an integer RUT. 
-    // If DV is 'K', this might fail if the DB column is integer.
-    // However, the user example 20885246-9 became 208852469.
-    // Let's assume we append the DV. If DV is K, we might need to handle it, 
-    // but for now let's follow the numeric pattern.
 
-    // If DV is K, we can't represent it as a pure integer if the column is integer.
-    // But let's assume standard numeric RUTs for now as per examples.
     let rutWithDv = rutBody + dv;
-    if (dv === 'K') {
-      // If the system supports K, it might be stored differently or not supported as int.
-      // For now, let's try to parse it. If it fails, it fails.
-      // But wait, the logs show {"rut":208852469}, which is 20885246 + 9.
-      // So we should return the full number.
-    }
 
+    logger.info("QR parsed as student credential", { original: trimmed, rut: rutWithDv });
     return { rut: rutWithDv, motivo: "qr-scan" };
   }
 
