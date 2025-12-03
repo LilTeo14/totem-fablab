@@ -71,9 +71,9 @@ def led_loop():
     
     while True:
         if current_mode == "FLASH":
-            # Parpadeo Azul
+            # Parpadeo Blanco
             if time.time() < flash_end_time:
-                pixels.fill(AZUL)
+                pixels.fill(BLANCO)
                 pixels.show()
                 time.sleep(0.1)
                 pixels.fill(NEGRO)
@@ -90,7 +90,7 @@ def led_loop():
             last_status_check = time.time()
             
         primary_color = VERDE if cached_open_status else ROJO
-        secondary_color = BLANCO
+        secondary_color = NEGRO # Antes BLANCO, ahora apagado
         
         # Girar
         for i in range(ring_len):
