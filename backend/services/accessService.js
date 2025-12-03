@@ -1,5 +1,6 @@
 const client = require("../db/client");
 const logger = require("../utils/logger");
+const { flashBlue } = require("./ledService");
 
 const accessListeners = new Set();
 
@@ -67,6 +68,10 @@ async function registerAccess({ rut, motivo, source, rawCode, area }) {
   const record = rows[0];
   notify(record);
   logger.info("Acceso registrado", { rut: normalizedRut, source: safeSource, area });
+
+  // Trigger LED flash
+  flashBlue();
+
   return record;
 }
 

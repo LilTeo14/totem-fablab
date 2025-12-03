@@ -25,6 +25,7 @@ services:
       context: backend
       dockerfile: Dockerfile
     restart: always
+    privileged: true # Allow access to GPIO
     ports:
       - "8000:8000"
     environment:
