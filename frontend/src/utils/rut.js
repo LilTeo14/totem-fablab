@@ -40,3 +40,22 @@ export function parseStudentQR(code) {
 
     return cleanCode;
 }
+
+export function maskRut(rut) {
+    if (!rut) return "";
+    const str = String(rut).replace(/[^0-9kK]/g, "");
+
+    // If too short, return as is (or formatted minimally)
+    if (str.length < 2) return str;
+
+    const dv = str.slice(-1);
+    const body = str.slice(0, -1);
+
+    // Show last 4 digits of the body if possible
+    if (body.length > 4) {
+        const visible = body.slice(-4);
+        return `****${visible}-${dv}`;
+    }
+
+    return `****${body}-${dv}`;
+}

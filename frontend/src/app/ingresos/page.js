@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import LatestAccesses from "../../components/LatestAccesses";
 import AreaSelectionModal from "../../components/AreaSelectionModal";
-import { parseStudentQR } from "../../utils/rut";
+import { parseStudentQR, maskRut } from "../../utils/rut";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
 
@@ -93,7 +93,7 @@ export default function IngresosPage() {
         // Actualizar solo si viene del lector remoto
         if (data.source === "qr-reader" && (data.raw_code || data.rut)) {
           setScannedCode(data.raw_code || String(data.rut));
-          setMessage(`Acceso registrado: RUT ${data.rut}`);
+          setMessage(`Acceso registrado: RUT ${maskRut(data.rut)}`);
 
           // Mostrar modal de selección de área SOLO si no tiene área asignada aún
           if (!data.area) {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { maskRut } from "../utils/rut";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
 
@@ -104,7 +105,7 @@ export default function LatestAccesses({ limit = 10 }) {
         {rows.map((row) => (
           <li key={row.id} className="latestAccessesItem">
             <div className="latestAccessesPrimary">
-              <span className="latestAccessesRut">RUT {row.rut}</span>
+              <span className="latestAccessesRut">RUT {maskRut(row.rut)}</span>
               <span className="latestAccessesMotivo">{row.motivo}</span>
             </div>
             <div className="latestAccessesMeta">
