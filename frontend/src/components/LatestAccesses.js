@@ -17,7 +17,7 @@ function formatTime(timestamp) {
   }
 }
 
-export default function LatestAccesses({ limit = 10 }) {
+export default function LatestAccesses({ limit = 50 }) {
   const [items, setItems] = useState([]);
   const [status, setStatus] = useState("Conectando al lector...");
 

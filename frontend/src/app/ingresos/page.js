@@ -122,16 +122,30 @@ export default function IngresosPage() {
   }, []);
 
   return (
-    <main className="container" style={{ justifyContent: "flex-start", paddingTop: 120, paddingBottom: 40 }}>
+    <main className="container" style={{
+      display: "flex",
+      flexDirection: "column",
+      height: "100vh",
+      overflow: "hidden",
+      padding: 0 // Reset padding, we'll handle it inside
+    }}>
+      {/* Fixed Top Section */}
       <div style={{
+        flex: "0 0 auto",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         textAlign: "center",
         gap: 24,
-        marginBottom: 40,
         width: "100%",
-        maxWidth: 600
+        maxWidth: 600,
+        margin: "0 auto",
+        paddingTop: 120, // Space for fixed header
+        paddingBottom: 20,
+        paddingLeft: 20,
+        paddingRight: 20,
+        zIndex: 10,
+        background: "var(--background)" // Ensure it covers content behind it if any
       }}>
         {/* Hero Icon */}
         <div style={{
@@ -201,8 +215,18 @@ export default function IngresosPage() {
         </div>
       </div>
 
-      <div style={{ width: "100%", maxWidth: 800 }}>
-        <LatestAccesses limit={8} />
+      {/* Scrollable List Section */}
+      <div style={{
+        flex: "1 1 auto",
+        overflowY: "auto",
+        width: "100%",
+        maxWidth: 800,
+        margin: "0 auto",
+        padding: "0 20px 40px 20px",
+        display: "flex",
+        flexDirection: "column"
+      }}>
+        <LatestAccesses limit={50} />
       </div>
 
       <AreaSelectionModal
