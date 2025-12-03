@@ -125,7 +125,7 @@ export default function IngresosPage() {
     <main className="container" style={{
       display: "flex",
       flexDirection: "column",
-      height: "100vh",
+      height: "calc(100vh - 60px)",
       overflow: "hidden",
       padding: 0 // Reset padding, we'll handle it inside
     }}>
