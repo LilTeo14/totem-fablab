@@ -125,7 +125,7 @@ export default function IngresosPage() {
     <main className="container" style={{
       display: "flex",
       flexDirection: "column",
-      height: "calc(100vh - 60px)",
+      height: "100%", // Fill the .app-content container
       overflow: "hidden",
       padding: 0 // Reset padding, we'll handle it inside
     }}>
@@ -140,7 +140,7 @@ export default function IngresosPage() {
         width: "100%",
         maxWidth: 600,
         margin: "0 auto",
-        paddingTop: 120, // Space for fixed header
+        paddingTop: 20, // Reduced padding since .app-content handles the top offset
         paddingBottom: 20,
         paddingLeft: 20,
         paddingRight: 20,

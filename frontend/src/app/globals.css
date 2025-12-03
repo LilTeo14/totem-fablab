@@ -79,8 +79,9 @@ body {
 
 /* Ensure page content is pushed below the fixed header used in layout.js */
 .app-content {
-  padding-top: 60px; /* matches .header height */
+  padding-top: 100px; /* Header (60px) + Banner (~40px) */
   width: 100%;
+  height: 100%; /* Fill the scaleWrap exactly */
 }
 
 /* Building status banner (for kiosk) */
@@ -90,7 +91,9 @@ body {
   justify-content: center;
   padding: 10px 0;
   /* Offset by header height so banner is not cropped by fixed header */
-  margin-top: 60px;
+  top: 60px; /* Fixed below header */
+  margin-top: 0;
+  position: fixed; /* Fix position so it doesn't push content down */
   z-index: 900; /* header is 1000, banner should appear below it */
 }
 .statusBanner .statusContent {
