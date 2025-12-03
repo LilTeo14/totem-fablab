@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import LatestAccesses from "../../components/LatestAccesses";
 import AreaSelectionModal from "../../components/AreaSelectionModal";
+import { parseStudentQR } from "../../utils/rut";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
 
@@ -14,7 +15,8 @@ export default function IngresosPage() {
   const [pendingAccessId, setPendingAccessId] = useState(null);
 
   const processCode = useCallback(async (code) => {
-    setScannedCode(code);
+    const processedCode = parseStudentQR(code);
+    setScannedCode(processedCode);
     setMessage("Procesando...");
 
     try {
@@ -23,7 +25,7 @@ export default function IngresosPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ code }),
+        body: JSON.stringify({ code: processedCode }),
       });
 
       const data = await response.json();
