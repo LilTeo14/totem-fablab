@@ -106,7 +106,6 @@ app.post("/saveData", async (req, res) => {
     const status = err.message.includes("RUT") ? 400 : 500;
     res.status(status).send("Error interno del servidor");
   }
-}
 });
 
 // --- STATUS API ---
