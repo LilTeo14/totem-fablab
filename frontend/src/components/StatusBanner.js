@@ -33,8 +33,8 @@ export default function StatusBanner() {
     <div className={"statusBanner " + (open ? "open" : "closed")} role="status" aria-live="polite">
       <div className="statusContent">
         <div className="statusMain">
-          <strong style={{ fontSize: 20 }}>{open ? "ABIERTO" : "CERRADO"}</strong>
-          <div style={{ fontSize: 12, marginTop: 4 }}>{open ? "Bienvenido a FABLAB, elige alguna de las opciones de abajo e ingresa al laboratorio" : "El edificio está cerrado"}</div>
+          <strong style={{ fontSize: 26 }}>{open ? "ABIERTO" : "CERRADO"}</strong>
+          <div style={{ fontSize: 16, marginTop: 4 }}>{open ? "Bienvenido a FABLAB, elige alguna de las opciones de abajo e ingresa al laboratorio" : "El edificio está cerrado"}</div>
         </div>
 
         <div className="statusSchedule" style={{ marginTop: 6 }}>
