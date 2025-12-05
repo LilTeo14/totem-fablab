@@ -10,7 +10,7 @@ export default function StatusBanner() {
   useEffect(() => {
     const fetchStatus = async () => {
       try {
-        const res = await fetch(`${BACKEND_URL}/api/status`);
+        const res = await fetch(`${BACKEND_URL}/api/status`, { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           setOpen(data.isOpen);
@@ -24,7 +24,7 @@ export default function StatusBanner() {
     fetchStatus();
 
     // Check every minute
-    const interval = setInterval(fetchStatus, 60000);
+    const interval = setInterval(fetchStatus, 5000);
 
     return () => clearInterval(interval);
   }, [BACKEND_URL]);
