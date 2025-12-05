@@ -10,8 +10,8 @@ COPY . .
 # Instalar wait-port globalmente
 RUN npm install -g wait-port
 
-# Instalar Python y dependencias para NeoPixel
-RUN apk add --no-cache python3 py3-pip gcc musl-dev linux-headers python3-dev
+# Instalar Python y dependencias para NeoPixel y tzdata para zona horaria
+RUN apk add --no-cache python3 py3-pip gcc musl-dev linux-headers python3-dev tzdata
 RUN python3 -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 RUN pip install --no-cache-dir rpi_ws281x adafruit-circuitpython-neopixel adafruit-blinka RPi.GPIO

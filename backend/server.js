@@ -120,9 +120,13 @@ function getAutoStatus() {
   // Schedule: Monday (1) to Friday (5)
   // 11:05 (665 mins) - 13:40 (820 mins)
   // 14:40 (880 mins) - 17:00 (1020 mins)
+
+  logger.info(`AutoStatus Check: Day=${day}, Time=${hour}:${minute} (${time} mins)`);
+
   if (day >= 1 && day <= 5) {
     const morningOpen = time >= 665 && time < 820;
     const afternoonOpen = time >= 880 && time < 1020;
+    logger.info(`Morning: ${morningOpen}, Afternoon: ${afternoonOpen}`);
     return morningOpen || afternoonOpen;
   }
   return false;
