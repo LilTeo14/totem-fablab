@@ -42,8 +42,8 @@ services:
     volumes:
       - ./backend:/app
       - /app/node_modules
+      - /dev/input:/dev/input
     devices:
-      - "/dev/input/event4:/dev/input/event4"
       - "/dev/mem:/dev/mem"
       - "/dev/gpiomem:/dev/gpiomem"
     cap_add:
